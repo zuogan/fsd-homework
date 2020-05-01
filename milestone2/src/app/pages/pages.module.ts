@@ -9,7 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button'
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { MainpageComponent } from './mainpage/mainpage.component';
+import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -27,12 +27,12 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
     HttpClientModule
   ],
   declarations: [ 
-    MainpageComponent,
+    HomePageComponent,
     LoginComponent,
     SignupComponent
   ],
   exports: [
-    MainpageComponent,
+    HomePageComponent,
     LoginComponent,
     SignupComponent  
   ],

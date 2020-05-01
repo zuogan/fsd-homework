@@ -3,7 +3,7 @@ import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/form
 import {ErrorStateMatcher} from '@angular/material/core';
 import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
-/** Error when invalid control is dirty, touched, or submitted. */
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
@@ -11,35 +11,16 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-// const menuItem = [{
-//     index: 1,
-//     name: 'Dashboard',
-//     path: '/dashboard'
-//    }, {
-//     index: 2,
-//     name: 'Request',
-//     path: '/home'
-//    }, {
-//     index: 3,
-//     name: 'Report',
-//     path: '/report'
-//    }]
-/** Error when invalid control is dirty, touched, or submitted. */
-
 @Component({
-  selector: 'app-companyeditor',
-  templateUrl: './companyeditor.component.html',
-  styleUrls: ['./companyeditor.component.scss'],
+  selector: 'ipo-edit',
+  templateUrl: './ipo-edit.component.html',
+  styleUrls: ['./ipo-edit.component.scss'],
 })
-
-
-
-export class CompanyeditorComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
+export class IPOEditComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
 
     pushRightClass: string = 'push-right';
     _userRole:string;
     
-    //companyEntry: any= {companyname: "Name1", ceoname : 'Hydrogen', turnover: 10000, description: 'OEMs in outomotive industry',ipodata:"",sector:"automotive",stockchangename:"",  code:"12345", action:""};
     isValid: boolean=true;
     showAdminMenu: boolean;
     isOpenAction: boolean;
@@ -58,35 +39,20 @@ export class CompanyeditorComponent implements OnInit,OnDestroy,AfterViewInit,Af
     
     matcher = new MyErrorStateMatcher();
 
-    // private _ibmheader: Header;
-    sectors=[
-      {displayName:"Public",value:"Public"},
-      {displayName:"Communication",value:"Communication"},
-      {displayName:"Distribution",value:"Distribution"},
-      {displayName:"Industria",value:"Industria"},
-      {displayName:"Commencial",value:"Commencial"},
-      {displayName:"Enterprise",value:"Enterprise"}
+    stockexchanges=[
+      {displayName:"NSE",value:"NSE"},
+      {displayName:"BYX",value:"BYX"}
     ]
     burgerKing:HTMLElement;
-    //home:any[]=["/dashboard"];
-    @Input() companyEntry:any; // 
+
+    @Input() ipoData:any; // 
     @Input() userRole:any; // 
     @Output() goback: EventEmitter<any> = new EventEmitter();
 
-    constructor(
-        public elementRef: ElementRef,
+    constructor(public elementRef: ElementRef,
         public userService: UserService,
         private router: Router
         ) { 
-        // router.events.subscribe(val => {
-        //     if (
-        //         val instanceof NavigationEnd &&
-        //         window.innerWidth <= 992 &&
-        //         this.isToggled()
-        //     ) {
-        //         this.toggleSidebar();
-        //     }
-        // });
         
     }
 
@@ -111,5 +77,4 @@ export class CompanyeditorComponent implements OnInit,OnDestroy,AfterViewInit,Af
     exit(){
       this.goback.emit();
     }
-   
 }

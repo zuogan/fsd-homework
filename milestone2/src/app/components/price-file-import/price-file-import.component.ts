@@ -11,30 +11,12 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-// const menuItem = [{
-//     index: 1,
-//     name: 'Dashboard',
-//     path: '/dashboard'
-//    }, {
-//     index: 2,
-//     name: 'Request',
-//     path: '/home'
-//    }, {
-//     index: 3,
-//     name: 'Report',
-//     path: '/report'
-//    }]
-/** Error when invalid control is dirty, touched, or submitted. */
-
 @Component({
-  selector: 'app-import',
-  templateUrl: './import.component.html',
-  styleUrls: ['./import.component.scss'],
+  selector: 'price-file-import',
+  templateUrl: './price-file-import.component.html',
+  styleUrls: ['./price-file-import.component.scss'],
 })
-
-
-
-export class ImportComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
+export class PriceFileImportComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
 
     pushRightClass: string = 'push-right';
     _userRole:string;    
@@ -49,7 +31,7 @@ export class ImportComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     emailFormControl = new FormControl('', [
         Validators.required,
         Validators.email,
-      ]);
+    ]);
     
     matcher = new MyErrorStateMatcher();
 
@@ -75,21 +57,10 @@ export class ImportComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     }
     
     submit(){
-      // let checkuser=this.userService.login(this.userName,this.passCode);
-      // if(checkuser===true){
-      //   this.isValid=true
-      //   this.router.navigate(['/home']);          
-      //   //redirect landing page
-      // }
-      // else{
-      //   this.isValid=false
-      //   //show user not valid
-      // }
+
     }
 
     cancel(){
-      // this.userName="";
-      // this.passCode="";
       this.isValid=true
     }
 

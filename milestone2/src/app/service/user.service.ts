@@ -1,8 +1,6 @@
-
 import { Injectable, Output } from '@angular/core';
 import { Observable, Subscriber, Subscription, Subject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-
 
 @Injectable({
   providedIn: 'root'
@@ -10,24 +8,16 @@ import { HttpClient } from '@angular/common/http';
 export class UserService {
 
   public loggedIn: boolean;
-  public curUser:any;
-  // private NODE_SERVICE: string
-  private SERVER: string;
-  public userList=[
-  {userName:"admin",password:"123456",roles:["admin"]},
-  {userName:"zuogan",password:"123456",roles:["reader"]}
-  ]
+  public currentUser: any;
 
-  // private _userLoggedIn = this.$q.defer();
-  // public userLoggedIn: Promise<any> = this._userLoggedIn.promise;
-  public userLoggedIn: Promise<any>;
+  private testUserList=[
+    {userName:"admin",password:"123456",roles:["admin"]},
+    {userName:"zuogan",password:"123456",roles:["user"]}
+  ]
+  public userList = this.testUserList; // []
 
   constructor(private http : HttpClient) { 
-    // this.SERVER = Constants.SERVER;
-    
     this.loggedIn = false;
-  
-    return this;
   }
 
   // login
@@ -35,7 +25,7 @@ export class UserService {
 
     for(let user in this.userList){
       if(this.userList[user].userName=== userName && this.userList[user].password=== passWord ){
-        this.curUser=this.userList[user];
+        this.currentUser=this.userList[user];
        
         this.loggedIn=true;
         return true
@@ -44,9 +34,7 @@ export class UserService {
     return false
   }
 
-  // get current user roles
-
-  public  inArray = function(arr, item) {
+  public inArray = function(arr, item) {
     for(var i = 0; i < arr.length; i++) {
            if(arr[i] == item) {
              return true;
@@ -55,45 +43,22 @@ export class UserService {
     return false;
   };
 
-  public getuserRole(){
-    if(this.curUser && this.curUser.roles && this.curUser.roles.length>=1){
+  public getUserRole(){
+    if(this.currentUser && this.currentUser.roles && this.currentUser.roles.length>=1){
 
-      if(this.inArray(this.curUser.roles,'admin')){
+      if(this.inArray(this.currentUser.roles,'admin')){
         return "admin"
       }
-      if(this.inArray(this.curUser.roles,'reader')){
-        return "reader"
+      if(this.inArray(this.currentUser.roles,'user')){
+        return "user"
       }
       return ""
     }
   }
 
-    /**
-   * Logout current user out.
-   * Then send user to login screen
-   *
-   * @return {object} route - send user to url that will log the
-   * user out of the app
-   */
-  public logout(): Promise<any> {
+  public logout(): Observable<any> {
     this.loggedIn = false;
-    this.curUser=null
-
-    // this.$state.go('cf.Login');
-    return this.http.get('/logout').toPromise();
+    this.currentUser = null
+    return this.http.get('/logout');
   }
-
-  /**
-   * Upon starting the app check if user is already logged in.
-   */
-
-
-  
-  
-  /**
-   * Return User object
-   *
-   * @returns {object} user - user object from ldap
-   */
-  
 }

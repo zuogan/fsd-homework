@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { HeaderComponent } from './components/header/header.component';
-import { MainpageComponent } from './pages/mainpage/mainpage.component';
+import { HomeHeaderComponent } from './components/home-header/home-header.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 const routes: Routes = [
 
-  { path: 'header', component: HeaderComponent },
-  { path: 'home', component: MainpageComponent },
+  { path: 'header', component: HomeHeaderComponent },
+  { path: 'home', component: HomePageComponent },
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent},
   { path: '', redirectTo: 'login', pathMatch: 'full' },

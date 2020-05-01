@@ -11,30 +11,12 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-// const menuItem = [{
-//     index: 1,
-//     name: 'Dashboard',
-//     path: '/dashboard'
-//    }, {
-//     index: 2,
-//     name: 'Request',
-//     path: '/home'
-//    }, {
-//     index: 3,
-//     name: 'Report',
-//     path: '/report'
-//    }]
-/** Error when invalid control is dirty, touched, or submitted. */
-
 @Component({
-  selector: 'app-ipoeditor',
-  templateUrl: './ipoeditor.component.html',
-  styleUrls: ['./ipoeditor.component.scss'],
+  selector: 'company-edit',
+  templateUrl: './company-edit.component.html',
+  styleUrls: ['./company-edit.component.scss'],
 })
-
-
-
-export class IpoeditorComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
+export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
 
     pushRightClass: string = 'push-right';
     _userRole:string;
@@ -59,16 +41,17 @@ export class IpoeditorComponent implements OnInit,OnDestroy,AfterViewInit,AfterC
     matcher = new MyErrorStateMatcher();
 
     // private _ibmheader: Header;
-    stockexchanges=[
-      {displayName:"NSE",value:"NSE"},
-      {displayName:"CME",value:"CME"},
-      {displayName:"TSE",value:"TSE"},
-      {displayName:"BYX",value:"BYX"}
- 
+    sectors=[
+      {displayName:"Public",value:"Public"},
+      {displayName:"Communication",value:"Communication"},
+      {displayName:"Distribution",value:"Distribution"},
+      {displayName:"Industria",value:"Industria"},
+      {displayName:"Commencial",value:"Commencial"},
+      {displayName:"Enterprise",value:"Enterprise"}
     ]
     burgerKing:HTMLElement;
     //home:any[]=["/dashboard"];
-    @Input() ipoEntry:any; // 
+    @Input() companyEntry:any; // 
     @Input() userRole:any; // 
     @Output() goback: EventEmitter<any> = new EventEmitter();
 

@@ -6,12 +6,12 @@
                 <!--  -->
    <form class="example-form">
         <mat-form-field class="example-full-width">
-                <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.companyname" name="companyname" matInput placeholder="Company Name"
+                <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.companyname" name="companyname" matInput placeholder="Company Name"
                  [errorStateMatcher]="matcher" value="">              
         </mat-form-field>
         <br>                  
         <mat-form-field class="example-full-width">
-            <mat-select disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.stockchange" name="stockchange" placeholder="stock exchange">
+            <mat-select disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.stockchange" name="stockchange" placeholder="stock exchange">
                 <mat-option *ngFor="let entry of stockexchanges" [value]="entry.value">
                   {{entry.displayName}}
                 </mat-option>
@@ -19,28 +19,28 @@
         </mat-form-field>
         <br>                  
         <mat-form-field class="example-full-width">
-          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.price"  name="price"  matInput placeholder="Price Per Share">
+          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.price"  name="price"  matInput placeholder="Price Per Share">
         </mat-form-field>
         <br>                  
         <mat-form-field class="example-full-width">
-          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.numberofshare"  name="numberofshare"   matInput placeholder="Number Of Shares">
+          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.numberofshare"  name="numberofshare"   matInput placeholder="Number Of Shares">
         </mat-form-field>
         <br>    
         
         <mat-form-field class="example-full-width">
 
-            <input name="opendatetime"  disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.opendatetime" matInput [matDatepicker]="picker" placeholder="open date time">
+            <input name="opendatetime"  disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.opendatetime" matInput [matDatepicker]="picker" placeholder="open date time">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>         
         </mat-form-field>
           <br> 
                   
         <mat-form-field class="example-full-width">
-          <textarea disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoEntry.remarks"  name="remarks" matInput placeholder="remarks"></textarea>
+          <textarea disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="ipoData.remarks"  name="remarks" matInput placeholder="remarks"></textarea>
         </mat-form-field>
         <br>                  
    </form>
  </div>      
- <div  class="buttonline"><button disabled="{{userRole=='admin'?false:true}}" (click)="Save()" mat-flat-button color="primary">Save</button> <button  (click)="exit()"  mat-stroked-button>Exit</button></div> 
+ <div  class="buttonline"><button disabled="{{userRole=='admin'?false:true}}" (click)="Save()" mat-flat-button color="primary">Save</button> <button  (click)="exit()"  mat-stroked-button>Cancel</button></div> 
 
 </div>

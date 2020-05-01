@@ -11,3 +11,11 @@ table {
 th.mat-sort-header-sorted {
   color: black;
 }
+.remove{
+  border: 1px solid #4CAF50;
+  margin-left: 5px;
+  &:hover {
+    background-color: #4CAF50; 
+    color: white;
+  }
+}

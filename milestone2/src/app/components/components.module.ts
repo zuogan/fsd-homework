@@ -1,12 +1,11 @@
 
-import { HeaderComponent } from './header/header.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { CompanylibComponent } from './companylib/companylib.component';
-import { CompanyeditorComponent } from './companyeditor/companyeditor.component';
+import { HomeHeaderComponent } from './home-header/home-header.component';
+import { CompanyTableComponent } from './company-table/company-table.component';
+import { CompanyEditComponent } from './company-edit/company-edit.component';
 
-import { IpolibComponent } from './ipolib/ipolib.component';
-import { IpoeditorComponent } from './Ipoeditor/Ipoeditor.component';
-import { ImportComponent } from './import/import.component';
+import { IPOTableComponent } from './ipo-table/ipo-table.component';
+import { IPOEditComponent } from './ipo-edit/ipo-edit.component';
+import { PriceFileImportComponent } from './price-file-import/price-file-import.component';
 import { CommonModule } from '@angular/common';  
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -41,22 +40,20 @@ import {MatNativeDateModule} from '@angular/material';
     
   ],
   declarations: [
-    HeaderComponent,
-    SidebarComponent,
-    CompanylibComponent,
-    ImportComponent,
-    CompanyeditorComponent,
-    IpolibComponent,
-    IpoeditorComponent  
+    HomeHeaderComponent,
+    CompanyTableComponent,
+    PriceFileImportComponent,
+    CompanyEditComponent,
+    IPOTableComponent,
+    IPOEditComponent  
   ],
   exports: [
-    HeaderComponent,
-    SidebarComponent,
-    CompanylibComponent,
-    ImportComponent,
-    CompanyeditorComponent,
-    IpolibComponent,
-    IpoeditorComponent       
+    HomeHeaderComponent,
+    CompanyTableComponent,
+    PriceFileImportComponent,
+    CompanyEditComponent,
+    IPOTableComponent,
+    IPOEditComponent       
   ],
   entryComponents: [
   
