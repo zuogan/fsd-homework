@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Aft
 import { UserService } from 'src/app/service/user.service';
 import {MatSort, MatTableDataSource, MatTable} from '@angular/material';
 import {MatPaginator} from '@angular/material';
+import { CompanyService } from 'src/app/service/company.service';
+import * as _ from "lodash";
 
 export interface TableElement {
   id: number;
@@ -28,6 +30,7 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
       {id:1, companyname: "BMW", ceoname : 'John', turnover: 10000, description: '320Li, 520, 730L, X3, X5', ipodata:"",sector:"automotive",stockchangename:"BSE",  code:"BMW", action:""},
       {id:2, companyname: "Mercedez Benz", ceoname : 'Bill', turnover: 9009, description: 'C200, E300, S300, GLA, GLC GLS',ipodata:"",sector:"automotive",stockchangename:"NSE",  code:"BEN", action:""}
     ];
+    tableData: TableElement[] = [];
 
     @ViewChild(MatTable) companyTable: MatTable<any>;
     @ViewChild(MatSort) sort: MatSort;
@@ -45,6 +48,7 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     showEditor: boolean=false;
     selectedEntry:any;
     constructor(public elementRef: ElementRef,
+        private companyService: CompanyService,
         public userService: UserService  ) { 
     }
 
@@ -64,9 +68,32 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
       if(this.userRole == "admin") {
         this.displayedColumns.push('action');
       }
-      this.dataSource = new MatTableDataSource(this.mockTableData);
+      this.loadCompanyData();
+      // this.dataSource = new MatTableDataSource(this.mockTableData);
+      this.dataSource = new MatTableDataSource(this.tableData);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
+    }
+
+    private loadCompanyData() {
+      this.companyService.listCompanies().subscribe((response: any) => {
+        if(response.data && response.data.length > 0) {
+          this.tableData = _.map(response.data, (item) => {
+            return {
+              id: item.id, 
+              companyname: item.companyName, 
+              ceoname : item.ceo, 
+              turnover: item.turnover, 
+              description: item.briefWriteUp, 
+              ipodata: "",
+              sector: item.sector.sectorName,
+              stockchangename: item.stockExchange.stockExchange,  
+              code: item.companyCode, 
+              action: ""}
+          });
+          this.companyTable.renderRows();
+        }
+      });
     }
 
     showlib(){
