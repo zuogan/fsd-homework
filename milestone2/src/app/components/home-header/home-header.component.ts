@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
+import { LoginService } from 'src/app/service/login-service';
 
 @Component({
   selector: 'home-header',
@@ -27,10 +28,10 @@ export class HomeHeaderComponent implements OnInit,OnDestroy,AfterViewInit,After
 
     constructor(
         public elementRef: ElementRef,
-        public userService: UserService,
+        public loginService: LoginService,
         public router: Router        
         ){ 
-        console.log("this.userService.loggedIn==============",this.userService.loggedIn)        
+        // console.log("this.userService.loggedIn==============",this.userService.loggedIn)        
     }
 
     ngOnDestroy(): void {
@@ -47,7 +48,7 @@ export class HomeHeaderComponent implements OnInit,OnDestroy,AfterViewInit,After
     }
 
     logout(){
-        this.userService.loggedIn=false;
+        this.loginService.logout();
         this.router.navigate(['/login']);    
     }
 }

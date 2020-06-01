@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, EventEmitter,Output, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
+import { CompanyService } from 'src/app/service/company.service';
+import { CompanyNew, CompanyUpdate } from 'src/app/model/company.model';
+import { LoginService } from 'src/app/service/login-service';
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -57,7 +60,9 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
 
     constructor(
         public elementRef: ElementRef,
-        public userService: UserService,
+        // public userService: UserService,
+        public loginService: LoginService,
+        private companyService: CompanyService,
         private router: Router
         ) { 
         // router.events.subscribe(val => {
@@ -87,11 +92,43 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
     }
     
     Save(){            
-  
+      if(this.companyEntry.id) { // update
+        let companyUpdate: CompanyUpdate = {
+          companyName: this.companyEntry.companyname,
+          turnover: this.companyEntry.turnover,
+          ceo: this.companyEntry.ceoname,
+          boardDirectors: this.companyEntry.boardDirectors,
+          briefWriteUp: this.companyEntry.briefWriteUp,
+          picUrl: '',
+          sectorId: this.companyEntry.sector.id
+        };
+        this.companyService.updateCompany(this.companyEntry.id, companyUpdate).subscribe((response: any) => {
+          console.log("****** update company resp: ", response);
+          this.exit(true);
+        });
+      } else { // new
+        let companyNew: CompanyNew = {
+          companyName: this.companyEntry.companyname,
+          turnover: this.companyEntry.turnover,
+          ceo: this.companyEntry.ceoname,
+          boardDirectors: this.companyEntry.boardDirectors,
+          briefWriteUp: this.companyEntry.briefWriteUp,
+          picUrl: '',
+          sectorId: this.companyEntry.sector.id,
+          companyStockExchangeList: []
+        };
+        this.companyService.createCompany(companyNew).subscribe((response: any) => {
+          console.log("****** create company resp: ", response);
+          this.exit(true);
+        });
+      }
+      
     }
 
-    exit(){
-      this.goback.emit();
+    exit(dataChanged){
+      this.goback.emit({
+        dataChanged: dataChanged
+      });
     }
    
 }

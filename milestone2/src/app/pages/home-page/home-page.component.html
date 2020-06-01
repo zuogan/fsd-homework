@@ -1,6 +1,6 @@
 
                <mat-tab-group>
-                <mat-tab  *ngIf="userService.getUserRole()=='admin'" label="Import Data">
+                <mat-tab  *ngIf="loginService.role=='admin'" label="Import Data">
                   <price-file-import></price-file-import> 
                 </mat-tab>
                 <mat-tab label="IPO Details">

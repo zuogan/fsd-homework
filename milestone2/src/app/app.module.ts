@@ -5,7 +5,10 @@ import { ComponentsModule } from './components/components.module';
 import { PagesModule } from './pages/pages.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+import { OAuthModule } from 'angular-oauth2-oidc';
 import { AppRoutingModule } from './app-routing.module';
+import { httpInterceptorProviders } from './interceptors';
+
 @NgModule({
   declarations: [
     AppComponent    
@@ -17,9 +20,10 @@ import { AppRoutingModule } from './app-routing.module';
     MatCheckboxModule,
     ComponentsModule,
     AppRoutingModule,
-    PagesModule
+    PagesModule,
+    OAuthModule.forRoot()
   ],
-  providers: [],
+  providers: [ httpInterceptorProviders ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

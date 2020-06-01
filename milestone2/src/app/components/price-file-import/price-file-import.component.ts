@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -37,7 +37,7 @@ export class PriceFileImportComponent implements OnInit,OnDestroy,AfterViewInit,
 
     constructor(
         public elementRef: ElementRef,
-        public userService: UserService,
+        // public userService: UserService,
         private router: Router
         ) { 
       

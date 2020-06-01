@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
+import { LoginService } from 'src/app/service/login-service';
 
 @Component({
   selector: 'home-page',
@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
 
     constructor(
         public elementRef: ElementRef,
-        public userService: UserService
+        public loginService: LoginService
         ) { 
     }
 

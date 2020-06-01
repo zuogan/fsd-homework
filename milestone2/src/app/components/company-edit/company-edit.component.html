@@ -21,11 +21,11 @@
         <br>                  
                   
         <mat-form-field class="example-full-width">
-          <textarea disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="companyEntry.description"  name="description" matInput placeholder="Description"></textarea>
+          <textarea disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="companyEntry.briefWriteUp"  name="briefWriteUp" matInput placeholder="brief write up"></textarea>
         </mat-form-field>
         <br>                  
         <mat-form-field class="example-full-width">
-          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="companyEntry.ipodata"  name="ipodata" matInput placeholder="Ipo data">
+          <input disabled="{{userRole=='admin'?false:true}}" [(ngModel)]="companyEntry.boardDirectors"  name="boardDirectors" matInput placeholder="board directors">
         </mat-form-field>
         <br>                  
         <mat-form-field class="example-full-width">
@@ -47,6 +47,6 @@
         </mat-form-field>
    </form>
  </div>      
- <div  class="buttonline"><button disabled="{{userRole=='admin'?false:true}}" (click)="Save()" mat-flat-button color="primary">Save</button> <button  (click)="exit()"  mat-stroked-button>Cancel</button></div> 
+ <div  class="buttonline"><button disabled="{{userRole=='admin'?false:true}}" (click)="Save()" mat-flat-button color="primary">Save</button> <button  (click)="exit(false)"  mat-stroked-button>Cancel</button></div> 
 
 </div>

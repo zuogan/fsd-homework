@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, EventEmitter,Output, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
+import { LoginService } from 'src/app/service/login-service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -50,7 +51,8 @@ export class IPOEditComponent implements OnInit,OnDestroy,AfterViewInit,AfterCon
     @Output() goback: EventEmitter<any> = new EventEmitter();
 
     constructor(public elementRef: ElementRef,
-        public userService: UserService,
+        // public userService: UserService,
+        public loginService: LoginService,
         private router: Router
         ) { 
         

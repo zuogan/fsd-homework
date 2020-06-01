@@ -3,6 +3,7 @@ import { Injectable, Output } from '@angular/core';
 import { Observable, Subscriber, Subscription, Subject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { CompanyNew, CompanyUpdate } from '../model/company.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class CompanyService {
     let paramsMap = {
       "searchText": searchText ? searchText : ""
     };
-    return this.http.get('/zuul-company/api/company/list', { params: paramsMap });
+    const url = `${environment.getBaseUrl('company')}/api/company/list`;
+    return this.http.get(url, { params: paramsMap });
   }
 
   public listCompaniesByPage(pageNum: number = 0, pageSize: number = 10, searchText?: string): Observable<any> {
@@ -27,22 +29,35 @@ export class CompanyService {
       "sort": "id,desc",
       "searchText": searchText ? searchText : ""
     }
-    return this.http.get('/zuul-company/api/company/page', { params: paramsMap });
+    const url = `${environment.getBaseUrl('company')}/api/company/page`;
+    return this.http.get(url, { params: paramsMap });
   }
 
   public getCompanyByid(id): Observable<any> {
-    return this.http.get('/zuul-company/api/company/'+id);
+    const url = `${environment.getBaseUrl('company')}/api/company/${id}`;
+    return this.http.get(url);
   }
 
   public createCompany(company: CompanyNew): Observable<any> {
-    return this.http.post('/zuul-company/api/company/create', company);
+    const url = `${environment.getBaseUrl('company')}/api/company/create`;
+    return this.http.post(url, company);
   }
 
   public updateCompany(id, company: CompanyUpdate): Observable<any> {
-    return this.http.post('/zuul-company/api/company/'+id+'/update', company);
+    const url = `${environment.getBaseUrl('company')}/api/company/${id}/update`;
+    return this.http.post(url, company);
   }
 
   public deleteCompanyByid(id): Observable<any> {
-    return this.http.get('/zuul-company/api/company/'+id+'/delete');
+    const url = `${environment.getBaseUrl('company')}/api/company/${id}/delete`;
+    return this.http.get(url);
   }
+
+  // private getAuthHeaders() : any {
+  //   var headers = new Headers();
+  //   // headers.set('Accept', 'application/json');
+  //   headers.set('Content-Type', 'application/json');
+  //   headers.set('Authorization', 'bearer ' + this.authService.accessToken);
+  //   return headers;
+  // }
 }

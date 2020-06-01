@@ -3,6 +3,8 @@ import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/form
 import {ErrorStateMatcher} from '@angular/material/core';
 import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
+import { LoginService } from 'src/app/service/login-service';
+import { AuthService } from 'src/app/service/auth-service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -40,8 +42,12 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit,AfterConte
     // @ViewChildren("ibmheader") list:QueryList<ElementRef>;
     // burgerKing:HTMLElement;
 
+    pageMessage: string = '';
+
     constructor(public elementRef: ElementRef,
         public userService: UserService,
+        private loginService: LoginService,
+        private authService: AuthService,
         private router: Router
         ) { 
         
@@ -59,17 +65,42 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit,AfterConte
     ngOnInit() {     
     }
     
+    // submit(){
+    //   let checkuser=this.userService.login(this.userName,this.passCode);
+    //   if(checkuser===true){
+    //     this.isValid=true
+    //     this.router.navigate(['/home']);          
+    //     //redirect landing page
+    //   }
+    //   else{
+    //     this.isValid=false
+    //     //show user not valid
+    //   }
+    // }
+
     submit(){
-      let checkuser=this.userService.login(this.userName,this.passCode);
-      if(checkuser===true){
-        this.isValid=true
-        this.router.navigate(['/home']);          
-        //redirect landing page
-      }
-      else{
-        this.isValid=false
-        //show user not valid
-      }
+      this.loginService.login(this.userName,this.passCode).subscribe(res=>{
+        console.log("*** login response: ", res);
+        console.log("*** login jwtToken: ", res.data.jwtToken);
+        if(res.code === 200){
+          this.loginService.isLoggedIn = true;
+          this.loginService.role = res.data.usertype.replace('ROLE_','');
+          this.loginService.currentUser = res.data.username;
+          console.log("loginService, isLoggedIn role and currentUser: ", this.loginService.isLoggedIn, this.loginService.role, this.loginService.currentUser);
+          if(res.data.jwtToken !== null){
+            let jwt_token = res.data.jwtToken;
+            jwt_token = jwt_token.replace('Bearer ','')
+            this.authService.setToken(jwt_token)
+          }
+        }
+        if(this.loginService.isLoggedIn){
+          this.router.navigate(['/home']); 
+        }
+      },
+      err => {
+        // console.log("*** login falied err: ", err);
+        this.pageMessage = err.error && err.error.message ? err.error.message : 'Login falied';
+      })
     }
 
     signup(){

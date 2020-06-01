@@ -4,10 +4,19 @@ import { HomeHeaderComponent } from './components/home-header/home-header.compon
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
+import { AuthGuard } from './guard/auth-guard';
 const routes: Routes = [
 
-  { path: 'header', component: HomeHeaderComponent },
-  { path: 'home', component: HomePageComponent },
+  // { path: 'header', component: HomeHeaderComponent, canActivate: [ AuthGuard ] },
+  { path: 'header', component: HomeHeaderComponent, canActivate: [ AuthGuard ]},
+  { path: 'home', component: HomePageComponent, canActivate: [ AuthGuard ]
+    // children: [
+    //   {
+    //       path: '/flight-search',
+    //       component: FlightSearchComponent
+    //   }
+    // ] 
+  },
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent},
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,6 +26,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: []
+  providers: [ AuthGuard ]
 })
 export class AppRoutingModule { }

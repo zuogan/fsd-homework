@@ -62,7 +62,7 @@
 </mat-paginator>
 </div>
 
-
+<button (click)="testLoad()" mat-flat-button color="primary">test load company</button>
 <company-edit [userRole]="userRole" [(companyEntry)]="selectedEntry" (goback)="showlib($event)" *ngIf="showEditor==true"></company-edit>
 
 

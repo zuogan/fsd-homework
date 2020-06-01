@@ -3,6 +3,7 @@ import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/form
 import {ErrorStateMatcher} from '@angular/material/core';
 import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
+import { SignupService } from 'src/app/service/signup-service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -31,11 +32,28 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     passCode: string;
     confirmpassCode: string;
     email: string;
+    mobileNumber: string;
+    usernameFormControl = new FormControl('', [
+        Validators.required
+    ]);
+    passwordFormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(6)
+    ]);
+    confirmpassword = new FormControl('', [
+        Validators.required,
+        Validators.minLength(6)
+    ]);
     emailFormControl = new FormControl('', [
         Validators.required,
-        Validators.email,
-      ]);
-    
+        Validators.email
+    ]);
+    mobileFormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+    ]);
+    signupMessage = '';
+
     matcher = new MyErrorStateMatcher();
 
     burgerKing:HTMLElement;
@@ -43,6 +61,7 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     constructor(
         public elementRef: ElementRef,
         public userService: UserService,
+        private signupService: SignupService,
         private router: Router
         ) { 
 
@@ -62,8 +81,30 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
 
     }
     
+    // submit(){
+    //     this.router.navigate(['/login']);          
+    // }
+
     submit(){
-        this.router.navigate(['/login']);          
+      this.signupMessage = '';
+      if(this.passCode !== this.confirmpassCode) {
+        this.signupMessage = 'Confirm password incorrect';
+        return;
+      }
+      console.log("**** signup test, username, password, email, mobileNumber:", this.userName, this.passCode, this.email, this.mobileNumber);
+      this.signupService.register({
+        'username': this.userName,
+        'password': this.passCode,
+        'email': this.email,
+        'mobileNumber': this.mobileNumber
+      }).subscribe(res=>{
+        console.log(res)
+        this.signupMessage = res.msg;
+        //redirect to login page
+        setTimeout(() => {
+          this.router.navigateByUrl('/login');
+        }, 5000)
+      })
     }
 
     cancel(){
@@ -71,6 +112,7 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
       this.passCode="";
       this.confirmpassCode="";
       this.email="";
+      this.mobileNumber="";
     }
    
 }

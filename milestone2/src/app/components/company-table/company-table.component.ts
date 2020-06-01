@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import {MatSort, MatTableDataSource, MatTable} from '@angular/material';
 import {MatPaginator} from '@angular/material';
 import { CompanyService } from 'src/app/service/company.service';
 import * as _ from "lodash";
+import { LoginService } from 'src/app/service/login-service';
 
 export interface TableElement {
   id: number;
@@ -49,7 +50,9 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     selectedEntry:any;
     constructor(public elementRef: ElementRef,
         private companyService: CompanyService,
-        public userService: UserService  ) { 
+        // public userService: UserService  
+        public loginService: LoginService
+        ) { 
     }
 
     ngOnDestroy(): void {
@@ -63,7 +66,7 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     }
 
     ngOnInit() {
-      this.userRole=this.userService.getUserRole();
+      this.userRole=this.loginService.role;
       console.log("userRole",this.userRole)
       if(this.userRole == "admin") {
         this.displayedColumns.push('action');
@@ -77,7 +80,7 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
 
     private loadCompanyData() {
       this.companyService.listCompanies().subscribe((response: any) => {
-        if(response.data && response.data.length > 0) {
+        if(response.code == 200 && response.data && response.data.length > 0) {
           this.tableData = _.map(response.data, (item) => {
             return {
               id: item.id, 
@@ -91,13 +94,24 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
               code: item.companyCode, 
               action: ""}
           });
+          console.log("***** this.tableData: ", this.tableData);
+          console.log("***** this.companyTable: ", this.companyTable);
+          this.dataSource.data = this.tableData;
           this.companyTable.renderRows();
         }
       });
     }
 
-    showlib(){
+    testLoad() {
+      this.loadCompanyData();
+    }
+
+    showlib(event){
       this.showEditor=false;
+      console.log("****** showlib, event: ", event);
+      // if(event.dataChanged) {
+      //   this.loadCompanyData();
+      // }
     }
 
     create(){
@@ -111,16 +125,22 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     }
    
     remove(element){
-      let index = -1;
-      for (var i = 0; i < this.mockTableData.length; i++) {
-        if (this.mockTableData[i].id == element.id) {
-          index = i;
-          break;
-        }
-      };
-      if(index > -1) {
-        this.mockTableData.splice(index, 1);
-        this.companyTable.renderRows();
-      }
+      this.companyService.deleteCompanyByid(element.id).subscribe(resp=> {
+        this.loadCompanyData();
+      });
     }
+
+    // remove(element){
+    //   let index = -1;
+    //   for (var i = 0; i < this.mockTableData.length; i++) {
+    //     if (this.mockTableData[i].id == element.id) {
+    //       index = i;
+    //       break;
+    //     }
+    //   };
+    //   if(index > -1) {
+    //     this.mockTableData.splice(index, 1);
+    //     this.companyTable.renderRows();
+    //   }
+    // }
 }

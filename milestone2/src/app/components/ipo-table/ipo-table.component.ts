@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Aft
 import { UserService } from 'src/app/service/user.service';
 import {MatSort, MatTableDataSource, MatTable} from '@angular/material';
 import {MatPaginator} from '@angular/material';
+import { LoginService } from 'src/app/service/login-service';
 
 export interface TableElement {
   id: number;
@@ -43,11 +44,13 @@ export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
     dataSource: any;
 
     constructor(public elementRef: ElementRef,
-        public userService: UserService) { 
+        // public userService: UserService
+        public loginService: LoginService
+        ) { 
     }
 
     ngOnInit() {
-      this.userRole=this.userService.getUserRole();
+      this.userRole=this.loginService.role;
       console.log("userRole",this.userRole)
       if(this.userRole == "admin") {
         this.displayedColumns.push('action');
