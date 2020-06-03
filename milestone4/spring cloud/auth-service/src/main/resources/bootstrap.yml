@@ -51,7 +51,7 @@ spring:
     host: smtp.aliyun.com
     port: 465 # mailSenderServer：smtp.qq.com，use SSL，prot 465 or 587
     username: zuogan@aliyun.com
-    password: whut04hw11@  
+    password: 1111111  
     default-encoding: UTF-8
     properties:
       mail:
