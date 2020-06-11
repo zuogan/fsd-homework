@@ -11,8 +11,8 @@ export interface TableElement {
   companyname: string;
   ceoname: string;
   turnover: number;
-  description: string;
-  ipodata: string;
+  briefWriteUp: string;
+  boardDirectors: string;
   sector: string;
   stockchangename: string;
   code: string;
@@ -28,15 +28,20 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
 
     mockTableData: TableElement[] =
     [
-      {id:1, companyname: "BMW", ceoname : 'John', turnover: 10000, description: '320Li, 520, 730L, X3, X5', ipodata:"",sector:"automotive",stockchangename:"BSE",  code:"BMW", action:""},
-      {id:2, companyname: "Mercedez Benz", ceoname : 'Bill', turnover: 9009, description: 'C200, E300, S300, GLA, GLC GLS',ipodata:"",sector:"automotive",stockchangename:"NSE",  code:"BEN", action:""}
+      // {id:1, companyname: "BMW", ceoname : 'John', turnover: 10000, description: '320Li, 520, 730L, X3, X5', ipodata:"",sector:"automotive",stockchangename:"BSE",  code:"BMW", action:""},
+      // {id:2, companyname: "Mercedez Benz", ceoname : 'Bill', turnover: 9009, description: 'C200, E300, S300, GLA, GLC GLS',ipodata:"",sector:"automotive",stockchangename:"NSE",  code:"BEN", action:""}
     ];
     tableData: TableElement[] = [];
 
     @ViewChild(MatTable) companyTable: MatTable<any>;
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    displayedColumns: string[] = ['companyname', 'ceoname', 'turnover', 'description','ipodata','sector','stockchangename','code'];
+    displayedColumns: string[] = [
+      'companyname', 'ceoname', 'turnover', 
+      'briefWriteUp','boardDirectors','sector',
+      'stockchangename',
+      'code'
+    ];
     dataSource: any;
 
     pushRightClass: string = 'push-right';
@@ -47,7 +52,15 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     isActive: boolean = false;
     currentPage: string;
     showEditor: boolean=false;
+    editMode: string;
     selectedEntry:any;
+    searchText:string = '';
+    loading: boolean = false;
+
+    pageLength = 0;
+    pageIndex = 0;
+    pageSize = 10;
+
     constructor(public elementRef: ElementRef,
         private companyService: CompanyService,
         // public userService: UserService  
@@ -60,6 +73,7 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
     }
 
     ngAfterViewInit() {
+      this.loadCompanyData();
     }
 
     ngAfterContentInit() {
@@ -71,62 +85,102 @@ export class CompanyTableComponent implements OnInit,OnDestroy,AfterViewInit,Aft
       if(this.userRole == "admin") {
         this.displayedColumns.push('action');
       }
-      this.loadCompanyData();
       // this.dataSource = new MatTableDataSource(this.mockTableData);
       this.dataSource = new MatTableDataSource(this.tableData);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     }
 
-    private loadCompanyData() {
-      this.companyService.listCompanies().subscribe((response: any) => {
-        if(response.code == 200 && response.data && response.data.length > 0) {
-          this.tableData = _.map(response.data, (item) => {
+    pageChanged(event) {
+      // console.log("**** pageChanged, event: ", event);
+      this.pageIndex = event.pageIndex;
+      this.loadCompanyData(false);
+    }
+
+    search() {
+      this.loadCompanyData(false);
+    }
+
+    private loadCompanyData(fromFirstPage : boolean = false) {
+      if(fromFirstPage) {
+        this.pageIndex = 0;
+      }
+      this.loading = true;
+      //this.companyService.listCompanies().subscribe((response: any) => {
+      this.companyService.listCompaniesByPage(this.pageIndex, this.pageSize, this.searchText).subscribe((response: any) => {
+        // if(response.code == 200 && response.data && response.data.length > 0) {
+        //   this.tableData = _.map(response.data, (item) => {
+        if(response.code == 200 && response.data && response.data.content && response.data.content.length > 0) {
+          this.tableData = _.map(response.data.content, (item) => {
             return {
               id: item.id, 
               companyname: item.companyName, 
               ceoname : item.ceo, 
               turnover: item.turnover, 
-              description: item.briefWriteUp, 
-              ipodata: "",
+              briefWriteUp: item.briefWriteUp, 
+              boardDirectors: item.boardDirectors,
               sector: item.sector.sectorName,
+              sectorId: item.sector.id,
               stockchangename: item.stockExchange.stockExchange,  
               code: item.companyCode, 
               action: ""}
           });
-          console.log("***** this.tableData: ", this.tableData);
-          console.log("***** this.companyTable: ", this.companyTable);
+          // console.log("***** this.tableData: ", this.tableData);
           this.dataSource.data = this.tableData;
+          this.pageLength = response.data.totalElements;
           this.companyTable.renderRows();
         }
+        this.loading = false;
       });
     }
 
-    testLoad() {
-      this.loadCompanyData();
-    }
+    // testLoad() {
+    //   this.loadCompanyData();
+    // }
 
     showlib(event){
       this.showEditor=false;
       console.log("****** showlib, event: ", event);
-      // if(event.dataChanged) {
-      //   this.loadCompanyData();
-      // }
+      if(event.dataChanged) {
+        this.loadCompanyData(true);
+      }
     }
 
     create(){
       this.showEditor=true;
-      this.selectedEntry={companyname: "Name1", ceoname : '', turnover: 0, description: '',ipodata:"",sector:"",stockchangename:"",  code:"", action:""};
+      this.editMode = 'create';
+      this.selectedEntry={
+        companyname: "Name1", 
+        ceoname : '', 
+        turnover: 0, 
+        briefWriteUp: '',
+        boardDirectors:"",
+        sector:"",
+        stockchangename:"",  
+        code:"", 
+        action:""
+      };
     }
 
     open(element){
       this.showEditor=true;
-      this.selectedEntry=element;
+      this.editMode = 'update';
+      // this.selectedEntry=element;
+      this.selectedEntry= {
+        id: element.id,
+        companyname: element.companyname,
+        turnover: element.turnover,
+        ceoname: element.ceoname,
+        briefWriteUp: element.briefWriteUp,
+        boardDirectors: element.boardDirectors,
+        sector: element.sectorId
+      };
+      // console.log("**** edit company, entry: ", this.selectedEntry);
     }
    
     remove(element){
       this.companyService.deleteCompanyByid(element.id).subscribe(resp=> {
-        this.loadCompanyData();
+        this.loadCompanyData(true);
       });
     }
 

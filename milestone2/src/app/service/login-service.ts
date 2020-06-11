@@ -18,7 +18,6 @@ export class LoginService {
 
     login(username, password) : Observable<any>{
         const url = `${environment.getBaseUrl('auth')}/login`;
-        console.log(url);
         console.log("username and password: ",username ,password);
         return this.http.post<any>(url, {
             'username': username,
@@ -27,11 +26,16 @@ export class LoginService {
     }
 
     logout(): void {
-        const url = `${environment.getBaseUrl('auth')}/logout`;
+        const url = `${environment.getBaseUrl('auth')}/logout/${this.currentUser}`;
         this.http.get(url).subscribe((res)=>{
             console.log("logout response:", res)
         });
         this.clearLocalVariable();
+    }
+
+    getCurrentUser() : Observable<any> {
+        const url = `${environment.getBaseUrl('auth')}/currentUser`;
+        return this.http.get<any>(url);
     }
 
     clearLocalVariable() {
@@ -39,5 +43,6 @@ export class LoginService {
         this.role = '';
         this.currentUser = '';
         this.authService.revokeToken();
+        console.log("*** cleared all local info");
     }
 }

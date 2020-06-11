@@ -39,17 +39,17 @@ export class CompanyService {
   }
 
   public createCompany(company: CompanyNew): Observable<any> {
-    const url = `${environment.getBaseUrl('company')}/api/company/create`;
+    const url = `${environment.getBaseUrl('company')}/api/company/admin/create`;
     return this.http.post(url, company);
   }
 
   public updateCompany(id, company: CompanyUpdate): Observable<any> {
-    const url = `${environment.getBaseUrl('company')}/api/company/${id}/update`;
+    const url = `${environment.getBaseUrl('company')}/api/company/admin/${id}/update`;
     return this.http.post(url, company);
   }
 
   public deleteCompanyByid(id): Observable<any> {
-    const url = `${environment.getBaseUrl('company')}/api/company/${id}/delete`;
+    const url = `${environment.getBaseUrl('company')}/api/company/admin/${id}/delete`;
     return this.http.get(url);
   }
 

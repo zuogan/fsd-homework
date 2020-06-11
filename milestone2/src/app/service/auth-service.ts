@@ -12,14 +12,15 @@ export class AuthService {
     private name:string = 'jwt-token'
     
     getToken():string {
-      
     　return localStorage.getItem(this.name)
     }
     setToken(token:string):void{
-      console.log("***** AuthService.setToken: ", token);
     　localStorage.setItem(this.name, token)
     }
     revokeToken():void {
       localStorage.removeItem(this.name);
+    }
+    hasToken(): boolean {
+      return this.getToken() ? true : false;
     }
 }

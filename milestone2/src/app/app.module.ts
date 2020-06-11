@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
 import { PagesModule } from './pages/pages.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+import {MatButtonModule, MatCheckboxModule, MatDialogModule } from '@angular/material';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AppRoutingModule } from './app-routing.module';
 import { httpInterceptorProviders } from './interceptors';
@@ -21,6 +21,7 @@ import { httpInterceptorProviders } from './interceptors';
     ComponentsModule,
     AppRoutingModule,
     PagesModule,
+    MatDialogModule,
     OAuthModule.forRoot()
   ],
   providers: [ httpInterceptorProviders ],

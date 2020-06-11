@@ -3,7 +3,8 @@ import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/form
 import {ErrorStateMatcher} from '@angular/material/core';
 import { UserService } from 'src/app/service/user.service';
 import { Router } from '@angular/router';
-import { SignupService } from 'src/app/service/signup-service';
+import { ProfileService } from 'src/app/service/profile-service';
+import { LoginService } from 'src/app/service/login-service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -13,11 +14,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'user-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss'],
+  selector: 'profile-update',
+  templateUrl: './profile-update.component.html',
+  styleUrls: ['./profile-update.component.scss'],
 })
-export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
+export class ProfileUpdateComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
 
     pushRightClass: string = 'push-right';
     _userRole:string;
@@ -28,15 +29,20 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     isOpenAdminAction: boolean;
     isActive: boolean = false;
     currentPage: string;
-    userName: string;
+    // userName: string;
     passCode: string;
+    newPassCode: string;
     confirmpassCode: string;
-    email: string;
-    mobileNumber: string;
-    usernameFormControl = new FormControl('', [
-        Validators.required
-    ]);
+    // email: string;
+    // mobileNumber: string;
+    // usernameFormControl = new FormControl('', [
+    //     Validators.required
+    // ]);
     passwordFormControl = new FormControl('', [
+        Validators.required,
+        Validators.minLength(6)
+    ]);
+    newPasswordFormControl = new FormControl('', [
         Validators.required,
         Validators.minLength(6)
     ]);
@@ -44,15 +50,15 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
         Validators.required,
         Validators.minLength(6)
     ]);
-    emailFormControl = new FormControl('', [
-        Validators.required,
-        Validators.email
-    ]);
-    mobileFormControl = new FormControl('', [
-        Validators.required,
-        Validators.minLength(8)
-    ]);
-    signupMessage = '';
+    // emailFormControl = new FormControl('', [
+    //     Validators.required,
+    //     Validators.email
+    // ]);
+    // mobileFormControl = new FormControl('', [
+    //     Validators.required,
+    //     Validators.minLength(8)
+    // ]);
+    updateMessage = '';
 
     matcher = new MyErrorStateMatcher();
 
@@ -61,7 +67,8 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     constructor(
         public elementRef: ElementRef,
         public userService: UserService,
-        private signupService: SignupService,
+        private profileService: ProfileService,
+        private loginService: LoginService,
         private router: Router
         ) { 
 
@@ -86,33 +93,31 @@ export class SignupComponent implements OnInit,OnDestroy,AfterViewInit,AfterCont
     // }
 
     submit(){
-      this.signupMessage = '';
-      if(this.passCode !== this.confirmpassCode) {
-        this.signupMessage = 'Confirm password incorrect';
+      this.updateMessage = '';
+      if(this.newPassCode !== this.confirmpassCode) {
+        this.updateMessage = 'Confirm password incorrect';
         return;
       }
-      console.log("**** signup test, username, password, email, mobileNumber:", this.userName, this.passCode, this.email, this.mobileNumber);
-      this.signupService.register({
-        'username': this.userName,
-        'password': this.passCode,
-        'email': this.email,
-        'mobileNumber': this.mobileNumber
-      }).subscribe(res=>{
-        console.log(res)
-        this.signupMessage = res.msg;
+
+      this.profileService.updatePassword(this.loginService.currentUser, this.passCode, this.newPassCode).subscribe(res=>{
+        this.updateMessage = res.msg;
         //redirect to login page
         setTimeout(() => {
-          this.router.navigateByUrl('/login');
-        }, 5000)
-      })
+            this.loginService.logout();
+            this.router.navigateByUrl('/login');
+        }, 3000)
+      },
+      err => {
+        this.updateMessage = err.error && err.error.message ? err.error.message : 'Update falied';
+      });
     }
 
     cancel(){
-      this.userName="";
       this.passCode="";
+      this.newPassCode="";
       this.confirmpassCode="";
-      this.email="";
-      this.mobileNumber="";
+    //   this.email="";
+    //   this.mobileNumber="";
     }
    
 }

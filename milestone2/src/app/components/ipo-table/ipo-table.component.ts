@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
+// import { UserService } from 'src/app/service/user.service';
 import {MatSort, MatTableDataSource, MatTable} from '@angular/material';
 import {MatPaginator} from '@angular/material';
 import { LoginService } from 'src/app/service/login-service';
+import { IPOService } from 'src/app/service/ipo.service';
+import * as _ from "lodash";
+import * as moment from 'moment';
 
 export interface TableElement {
   id: number;
@@ -22,10 +25,10 @@ export interface TableElement {
 })
 export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterContentInit {
 
-    mockTableData: TableElement[]  = [
-      {id: 1, companyname: "BMW", stockchange : 'NSE', price: 33.22, numberofshare: 100000,opendatetime:"2019-12-12",remarks:"BMW", action:""},
-      {id: 2, companyname: "Mercedez Benz", stockchange : 'BSE', price: 11.9, numberofshare: 2000000,opendatetime:"2019-11-11",remarks:"BENZ", action:""},
-    ];
+    // mockTableData: TableElement[]  = [
+    //   {id: 1, companyname: "BMW", stockchange : 'NSE', price: 33.22, numberofshare: 100000,opendatetime:"2019-12-12",remarks:"BMW", action:""},
+    //   {id: 2, companyname: "Mercedez Benz", stockchange : 'BSE', price: 11.9, numberofshare: 2000000,opendatetime:"2019-11-11",remarks:"BENZ", action:""},
+    // ];
 
     pushRightClass: string = 'push-right';
     userRole:string;
@@ -37,6 +40,12 @@ export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
     showEditor: boolean=false;
     selectedEntry:any;
 
+    tableData: TableElement[] = [];
+    pageLength = 0;
+    pageIndex = 0;
+    pageSize = 10;
+    editMode: string;
+
     @ViewChild(MatTable) ipoTable: MatTable<any>;
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -45,6 +54,7 @@ export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
 
     constructor(public elementRef: ElementRef,
         // public userService: UserService
+        private ipoService: IPOService,
         public loginService: LoginService
         ) { 
     }
@@ -55,9 +65,45 @@ export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
       if(this.userRole == "admin") {
         this.displayedColumns.push('action');
       }
-      this.dataSource = new MatTableDataSource(this.mockTableData);
+      // this.dataSource = new MatTableDataSource(this.mockTableData);
+      this.dataSource = new MatTableDataSource(this.tableData);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
+      // this.loadIPOData();
+    }
+
+    pageChanged(event) {
+      // console.log("**** pageChanged, event: ", event);
+      this.pageIndex = event.pageIndex;
+      this.loadIPOData(false);
+    }
+
+    private loadIPOData(fromFirstPage : boolean = false) {
+      if(fromFirstPage) {
+        this.pageIndex = 0;
+      }
+      this.ipoService.getIPOByPage(this.pageIndex, this.pageSize).subscribe((response: any) => {
+        if(response.code == 200 && response.data && response.data.content && response.data.content.length > 0) {
+          this.tableData = _.map(response.data.content, (item) => {
+            return {
+              id: item.id, 
+              companyId: item.company.id, 
+              companyname: item.company.companyName, 
+              stockchangeId: item.stockExchange.id,
+              stockchange: item.stockExchange.stockExchange, 
+              price : item.pricePerShare, 
+              numberofshare: item.totalShares, 
+              opendatetime: item.openDatetime, 
+              remarks: item.remarks,
+              action: ""
+            }
+          });
+          console.log("***** this.tableData: ", this.tableData);
+          this.dataSource.data = this.tableData;
+          this.pageLength = response.data.totalElements;
+          this.ipoTable.renderRows();
+        }
+      });
     }
 
     ngOnDestroy(): void {
@@ -65,36 +111,68 @@ export class IPOTableComponent implements OnInit,OnDestroy,AfterViewInit,AfterCo
     }
 
     ngAfterViewInit() {
+      this.loadIPOData();
     }
 
     ngAfterContentInit() {
     }
   
-    showlib(){
+    showlib(event){
       this.showEditor=false;
+      console.log("****** showlib, event: ", event);
+      if(event.dataChanged) {
+        this.loadIPOData(true);
+      }
     }
 
     create(){
       this.showEditor=true;
-      this.selectedEntry= {companyname: "Name1", stockchange : 'NSE', price: 100, numberofshare: 1000000,opendatetime:0,remarks:"111"};
+      this.editMode = 'create';
+      this.selectedEntry= {
+        companyname: "Name1", 
+        stockchange : '', 
+        price: 0, 
+        numberofshare: 0,
+        opendatetime: '',
+        remarks: ''
+      };
     }
 
     open(element){
       this.showEditor=true;
-      this.selectedEntry=element;
+      this.editMode = 'update';
+      this.selectedEntry= {
+        id: element.id,
+        companyname: element.companyId, 
+        stockchange : element.stockchangeId, 
+        price: element.price, 
+        numberofshare: element.numberofshare,
+        opendatetime: moment(element.opendatetime).toDate(),
+        remarks: element.remarks
+      };
     }
    
     remove(element){
-      let index = -1;
-      for (var i = 0; i < this.mockTableData.length; i++) {
-        if (this.mockTableData[i].id == element.id) {
-          index = i;
-          break;
-        }
-      };
-      if(index > -1) {
-        this.mockTableData.splice(index, 1);
-        this.ipoTable.renderRows();
-      }
+      this.ipoService.deleteIPOByid(element.id).subscribe(resp=> {
+        this.loadIPOData(true);
+      });
     }
+
+    formatDate(element) {
+      return moment(element.opendatetime).format('YYYY-MM-DD');
+    }
+    
+    // remove(element){
+    //   let index = -1;
+    //   for (var i = 0; i < this.mockTableData.length; i++) {
+    //     if (this.mockTableData[i].id == element.id) {
+    //       index = i;
+    //       break;
+    //     }
+    //   };
+    //   if(index > -1) {
+    //     this.mockTableData.splice(index, 1);
+    //     this.ipoTable.renderRows();
+    //   }
+    // }
 }

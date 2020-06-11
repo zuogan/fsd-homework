@@ -11,6 +11,7 @@ export class CompanyUpdate {
 }
 export class CompanyNew extends CompanyUpdate {
     companyStockExchangeList?:{
-        stockExchangeId: number
+        stockExchangeId: number,
+        companyCode: string
     }[] = [];
 }

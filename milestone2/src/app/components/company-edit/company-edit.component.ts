@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { CompanyService } from 'src/app/service/company.service';
 import { CompanyNew, CompanyUpdate } from 'src/app/model/company.model';
 import { LoginService } from 'src/app/service/login-service';
+import { SectorService } from 'src/app/service/sector.service';
+import { StockExchangeService } from 'src/app/service/stockexchange.service';
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -44,25 +46,33 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
     matcher = new MyErrorStateMatcher();
 
     // private _ibmheader: Header;
-    sectors=[
-      {displayName:"Public",value:"Public"},
-      {displayName:"Communication",value:"Communication"},
-      {displayName:"Distribution",value:"Distribution"},
-      {displayName:"Industria",value:"Industria"},
-      {displayName:"Commencial",value:"Commencial"},
-      {displayName:"Enterprise",value:"Enterprise"}
-    ]
+    // sectors=[
+    //   {displayName:"Public",value:"Public"},
+    //   {displayName:"Communication",value:"Communication"},
+    //   {displayName:"Distribution",value:"Distribution"},
+    //   {displayName:"Industria",value:"Industria"},
+    //   {displayName:"Commencial",value:"Commencial"},
+    //   {displayName:"Enterprise",value:"Enterprise"}
+    // ]
+    sectors=[];
+    stockexchanges=[];
+    secondStockchange:any;
+    secondCompanyCode:any;
+    showSecondStockExchange:boolean = false;
     burgerKing:HTMLElement;
     //home:any[]=["/dashboard"];
     @Input() companyEntry:any; // 
     @Input() userRole:any; // 
     @Output() goback: EventEmitter<any> = new EventEmitter();
+    @Input() mode:string;
 
     constructor(
         public elementRef: ElementRef,
         // public userService: UserService,
         public loginService: LoginService,
         private companyService: CompanyService,
+        private sectorService: SectorService,
+        private stockExchangeService: StockExchangeService,
         private router: Router
         ) { 
         // router.events.subscribe(val => {
@@ -88,7 +98,18 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
 
     }
     ngOnInit() {     
-
+      this.sectorService.listAll().subscribe((response: any) => {
+        if(response.code == 200 && response.data && response.data.length > 0) {
+          // console.log("***** listAllSectors response: ", response);
+          this.sectors = response.data;
+        }
+      });
+      this.stockExchangeService.listAllStockExchange().subscribe((response: any) => {
+        if(response.code == 200 && response.data && response.data.length > 0) {
+          // console.log("***** listAllStockExchange response: ", response);
+          this.stockexchanges = response.data;
+        }
+      });
     }
     
     Save(){            
@@ -100,7 +121,7 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
           boardDirectors: this.companyEntry.boardDirectors,
           briefWriteUp: this.companyEntry.briefWriteUp,
           picUrl: '',
-          sectorId: this.companyEntry.sector.id
+          sectorId: this.companyEntry.sector
         };
         this.companyService.updateCompany(this.companyEntry.id, companyUpdate).subscribe((response: any) => {
           console.log("****** update company resp: ", response);
@@ -114,9 +135,19 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
           boardDirectors: this.companyEntry.boardDirectors,
           briefWriteUp: this.companyEntry.briefWriteUp,
           picUrl: '',
-          sectorId: this.companyEntry.sector.id,
-          companyStockExchangeList: []
+          sectorId: this.companyEntry.sector,
+          companyStockExchangeList: [{
+            stockExchangeId: this.companyEntry.stockchangename,
+            companyCode: this.companyEntry.code
+          }]
         };
+        if(this.secondStockchange && this.secondCompanyCode) {
+          companyNew.companyStockExchangeList.push({
+            stockExchangeId: this.secondStockchange,
+            companyCode: this.secondCompanyCode
+          });
+        }
+        console.log("****** companyNew: ", companyNew);
         this.companyService.createCompany(companyNew).subscribe((response: any) => {
           console.log("****** create company resp: ", response);
           this.exit(true);
@@ -131,4 +162,13 @@ export class CompanyEditComponent implements OnInit,OnDestroy,AfterViewInit,Afte
       });
     }
    
+    addStockExchange(){
+      this.showSecondStockExchange = true;
+    }
+
+    removeStockExchange(){
+      this.showSecondStockExchange = false;
+      this.secondStockchange = null;
+      this.secondCompanyCode = null;
+    }
 }

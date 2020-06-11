@@ -92,6 +92,8 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit,AfterConte
             jwt_token = jwt_token.replace('Bearer ','')
             this.authService.setToken(jwt_token)
           }
+        } else if(res.code !== 200 && res.message){
+          this.pageMessage = res.message;
         }
         if(this.loginService.isLoggedIn){
           this.router.navigate(['/home']); 
@@ -99,7 +101,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit,AfterConte
       },
       err => {
         // console.log("*** login falied err: ", err);
-        this.pageMessage = err.error && err.error.message ? err.error.message : 'Login falied';
+        this.pageMessage = err.error && err.error.message ? err.error.message : (err.message ? err.message : 'Login falied');
       })
     }
 

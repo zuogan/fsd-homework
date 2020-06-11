@@ -19,14 +19,12 @@ $topnav-background-color: #3d70b2;
 
   .title{
     text-align: center;
-    font-size: 20px;
-    color:$topnav-background-color;
-    margin-bottom: 20px;
+    font-size: 28px;
+    color:$topnav-background-color
   }
   .loginfor {
     width:100%;
     text-align: center;
-    margin-bottom: 10px;
   }
   .buttonline{
     margin-top:30px;
@@ -34,19 +32,4 @@ $topnav-background-color: #3d70b2;
     width:100%;
     text-align: center;
     button{margin-right: 8px;}
-  }
-  .download-link {
-    font-size: 12px;
-    text-decoration: underline;
-  }
-  .summary-line {
-    margin-bottom: 12px;
-  }
-  // .summary-line-label {
-  //   margin-bottom: 12px;
-  // }
-  .summary-line-content {
-    margin-left: 15px;
-    color: red;
-    font-size: 17px;
   }

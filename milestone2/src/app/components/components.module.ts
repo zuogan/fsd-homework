@@ -19,8 +19,10 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { NgModule } from '@angular/core';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-
-import {MatNativeDateModule} from '@angular/material';
+import {MatNativeDateModule, MatDialogModule, MatAutocomplete, MatAutocompleteModule} from '@angular/material';
+import { CompanyComparisonComponent } from './company-comparison/company-comparison.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [ 
@@ -36,7 +38,11 @@ import {MatNativeDateModule} from '@angular/material';
     MatButtonModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatDialogModule,
+    MatAutocompleteModule,
+    NgxEchartsModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule
     
   ],
   declarations: [
@@ -45,7 +51,8 @@ import {MatNativeDateModule} from '@angular/material';
     PriceFileImportComponent,
     CompanyEditComponent,
     IPOTableComponent,
-    IPOEditComponent  
+    IPOEditComponent,
+    CompanyComparisonComponent  
   ],
   exports: [
     HomeHeaderComponent,
@@ -53,7 +60,8 @@ import {MatNativeDateModule} from '@angular/material';
     PriceFileImportComponent,
     CompanyEditComponent,
     IPOTableComponent,
-    IPOEditComponent       
+    IPOEditComponent,
+    CompanyComparisonComponent       
   ],
   entryComponents: [
   

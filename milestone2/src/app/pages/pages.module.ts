@@ -13,6 +13,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ProfileUpdateComponent } from './profile-update/profile-update.component';
 @NgModule({
   imports: [ 
     MatSidenavModule,
@@ -29,12 +30,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
   declarations: [ 
     HomePageComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    ProfileUpdateComponent
   ],
   exports: [
     HomePageComponent,
     LoginComponent,
-    SignupComponent  
+    SignupComponent,
+    ProfileUpdateComponent  
   ],
   entryComponents: [
   
